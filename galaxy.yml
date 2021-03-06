@@ -1,0 +1,14 @@
+namespace: almalinux
+name: ci
+version: 0.1.0
+readme: README.md
+authors:
+  - Eugene Zamriy <eugene@zamriy.info>
+description: The AlmaLinux OS CI collection
+license_file: 'LICENSE'
+tags:
+  - almalinux
+dependencies: {}
+repository: https://github.com/AlmaLinux/ansible-almalinux.ci
+homepage: https://github.com/AlmaLinux/ansible-almalinux.ci
+issues: https://github.com/AlmaLinux/ansible-almalinux.ci/issues

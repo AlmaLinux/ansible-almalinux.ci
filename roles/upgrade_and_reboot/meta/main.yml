@@ -1,0 +1,18 @@
+galaxy_info:
+  role_name: upgrade_and_reboot
+  author: Eugene Zamriy 
+  description: Upgrades all packages, reboots a host and waits for it to return
+  license: MIT
+
+  min_ansible_version: 2.7
+
+  platforms:
+  - name: EL
+    versions:
+    - 8
+
+  galaxy_tags:
+    - reboot
+    - upgrade
+
+dependencies: []
