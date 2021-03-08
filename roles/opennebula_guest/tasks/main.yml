@@ -1,0 +1,22 @@
+---
+- name: Install one-context package
+  package:
+    name: "{{ one_context_url }}"
+    state: installed
+
+- name: Enable one-context service
+  service:
+    name: one-context
+    enabled: true
+
+- name: Install disk resize dependencies
+  package:
+    name:
+      - cloud-utils-growpart
+      - parted
+      - open-vm-tools
+      - qemu-guest-agent
+    state: latest
+
+- name: Update initramfs
+  command: dracut -f

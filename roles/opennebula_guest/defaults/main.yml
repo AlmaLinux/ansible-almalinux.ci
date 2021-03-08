@@ -1,0 +1,5 @@
+---
+one_context_version: 5.12.0.2
+one_context_release: 1
+# yamllint disable-line
+one_context_url: https://github.com/OpenNebula/addon-context-linux/releases/download/v{{ one_context_version }}/one-context-{{ one_context_version }}-{{ one_context_release }}.el{{ ansible_distribution_major_version }}.noarch.rpm

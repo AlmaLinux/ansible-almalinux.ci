@@ -1,0 +1,19 @@
+---
+galaxy_info:
+  role_name: opennebula_guest
+  author: Eugene Zamriy
+  description: Installs OpenNebula contextualization tools
+  license: MIT
+
+  min_ansible_version: 2.7
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+
+  galaxy_tags:
+    - opennebula
+    - one-context
+
+dependencies: []
