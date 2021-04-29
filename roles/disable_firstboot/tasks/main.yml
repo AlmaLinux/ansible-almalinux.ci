@@ -1,0 +1,10 @@
+---
+- name: Disable firstboot
+  lineinfile:
+    path: /etc/sysconfig/firstboot
+    regexp: '^RUN_FIRSTBOOT='
+    line: 'RUN_FIRSTBOOT=NO'
+    create: true
+    owner: root
+    group: root
+    mode: 0644

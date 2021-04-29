@@ -1,0 +1,14 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Enable firstboot
+      lineinfile:
+        path: /etc/sysconfig/firstboot
+        regexp: '^RUN_FIRSTBOOT='
+        line: 'RUN_FIRSTBOOT=YES'
+        create: true
+        owner: bin
+        group: bin
+        mode: 0777

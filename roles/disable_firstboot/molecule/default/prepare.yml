@@ -1,0 +1,9 @@
+---
+- name: Prepare
+  hosts: all
+  become: true
+  tasks:
+    - name: Delete /etc/sysconfig/firstboot file
+      file:
+        path: /etc/sysconfig/firstboot
+        state: absent
