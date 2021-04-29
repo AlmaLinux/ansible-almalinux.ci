@@ -12,3 +12,5 @@ dependencies: {}
 repository: https://github.com/AlmaLinux/ansible-almalinux.ci
 homepage: https://github.com/AlmaLinux/ansible-almalinux.ci
 issues: https://github.com/AlmaLinux/ansible-almalinux.ci/issues
+build_ignore:
+  - env

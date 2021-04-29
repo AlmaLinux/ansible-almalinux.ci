@@ -1,0 +1,4 @@
+.cache
+env
+**/*.pyc
+almalinux-ci-*.tar.gz
