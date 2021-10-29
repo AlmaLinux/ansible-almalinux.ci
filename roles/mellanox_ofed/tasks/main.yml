@@ -1,0 +1,65 @@
+---
+- name: Detect kernel version
+  command: uname -r
+  register: mlnx_ofed_uname_rslt
+
+- name: Install build dependencies
+  dnf:
+    name:
+      - '@perl/minimal'
+      - '@python36/build'
+      - "kernel-devel-{{ mlnx_ofed_uname_rslt.stdout }}"
+      - "kernel-modules-extra-{{ mlnx_ofed_uname_rslt.stdout }}"
+      - gcc
+      - gcc-gfortran
+      - lsof
+      - rpm-build
+      - kernel-rpm-macros
+      - elfutils-libelf-devel
+      - make
+      - tk
+      - tcsh
+    state: present
+
+- name: Create Mellanox OFED temporary directory
+  tempfile:
+    path: /root
+    state: directory
+    prefix: mlnx_ofed_
+  register: mlnx_ofed_tmp
+
+- name: Download drivers tarball
+  get_url:
+    url: "{{ mlnx_ofed_url }}"
+    checksum: "{{ mlnx_ofed_checksum }}"
+    dest: "{{ mlnx_ofed_tmp.path }}/MLNX_OFED.tgz"
+
+- name: Unpack drivers tarball
+  unarchive:
+    src: "{{ mlnx_ofed_tmp.path }}/MLNX_OFED.tgz"
+    dest: "{{ mlnx_ofed_tmp.path }}/"
+    remote_src: true
+
+- name: Find unpacked directory
+  find:
+    paths: "{{ mlnx_ofed_tmp.path }}/"
+    file_type: directory
+  register: mlnx_ofed_found_dirs
+
+- name: Patch Mellanox OFED installer for AlmaLinux support
+  replace:
+    path: "{{ mlnx_ofed_found_dirs.files[0].path }}/common.pl"
+    regexp: '^(.*?/)\(redhat\|centos\|centos-linux\)-release-8(.*?)$'
+    replace: '\1(redhat|centos|centos-linux|almalinux)-release-8\2'
+
+- name: Run Mellanox OFED installer
+  command: "{{ mlnx_ofed_found_dirs.files[0].path }}/mlnxofedinstall --kernel {{ mlnx_ofed_uname_rslt.stdout }} --kernel-sources /usr/src/kernels/{{ mlnx_ofed_uname_rslt.stdout }} --add-kernel-support --skip-repo"
+
+- name: Update initramfs
+  command: dracut -f
+
+- name: Delete Mellanox OFED temporary directory
+  file:
+    path: "{{ mlnx_ofed_tmp.path }}"
+    state: absent
+  when: mlnx_ofed_tmp.path is defined

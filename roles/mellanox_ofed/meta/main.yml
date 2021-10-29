@@ -1,0 +1,18 @@
+galaxy_info:
+  role_name: mellanox_ofed
+  namespace: almalinux
+  author: Eugene Zamriy
+  description: Installs Mellanox OFED drivers on AlmaLinux OS
+  company: AlmaLinux OS Foundation
+  license: MIT
+  min_ansible_version: 2.5
+  platforms:
+    - name: EL
+      versions:
+        - 8
+  galaxy_tags:
+    - almalinux
+    - mellanox
+    - ofed
+
+dependencies: []

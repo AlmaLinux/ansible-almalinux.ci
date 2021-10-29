@@ -1,0 +1,7 @@
+exclude_paths:
+  - ./env
+  - ./venv
+
+skip_list:
+  # ignore "Commands should not change things if nothing needs doing"
+  - '301'

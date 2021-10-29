@@ -1,0 +1,6 @@
+ansible==4.7.0
+ansible-lint[yamllint]
+molecule[lint]
+molecule-vagrant
+python-vagrant
+pytest-testinfra
