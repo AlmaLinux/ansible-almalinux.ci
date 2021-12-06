@@ -12,6 +12,7 @@
       - "kernel-modules-extra-{{ mlnx_ofed_uname_rslt.stdout }}"
       - gcc
       - gcc-gfortran
+      - libtool
       - lsof
       - rpm-build
       - kernel-rpm-macros
