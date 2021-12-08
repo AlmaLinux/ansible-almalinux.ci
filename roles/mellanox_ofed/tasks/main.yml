@@ -10,6 +10,7 @@
       - '@python36/build'
       - "kernel-devel-{{ mlnx_ofed_uname_rslt.stdout }}"
       - "kernel-modules-extra-{{ mlnx_ofed_uname_rslt.stdout }}"
+      - python3-dnf-plugin-versionlock
       - gcc
       - gcc-gfortran
       - libtool
@@ -64,3 +65,8 @@
     path: "{{ mlnx_ofed_tmp.path }}"
     state: absent
   when: mlnx_ofed_tmp.path is defined
+
+- name: Lock perftest package version
+  command: dnf versionlock add perftest
+  register: perftest_lock
+  changed_when: "'Adding versionlock on: perftest' in perftest_lock.stdout"

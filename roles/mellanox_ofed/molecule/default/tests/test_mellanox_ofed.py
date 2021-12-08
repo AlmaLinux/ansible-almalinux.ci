@@ -20,3 +20,9 @@ def test_tmp_dir_removed(host):
     with host.sudo():
         for f_name in host.file('/root').listdir():
             assert f_name.startswith('mlnx_ofed') is not True
+
+
+def test_perftest_versionlock(host):
+    with host.sudo():
+        cmd = host.run('dnf versionlock list')
+        assert 'perftest' in cmd.stdout
