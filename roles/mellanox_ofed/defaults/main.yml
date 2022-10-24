@@ -1,3 +1,5 @@
 ---
 mlnx_ofed_url: 'https://content.mellanox.com/ofed/MLNX_OFED-5.7-1.0.2.0/MLNX_OFED_LINUX-5.7-1.0.2.0-rhel8.6-x86_64.tgz'
 mlnx_ofed_checksum: 'sha256:f4ee27b12e47c5df4ca2eb9c816f743914e2a6e420f31a9a603b958569158dfe'
+mlnx_ofed_9_url: 'https://content.mellanox.com/ofed/MLNX_OFED-5.7-1.0.2.0/MLNX_OFED_LINUX-5.7-1.0.2.0-rhel9.0-x86_64.tgz'
+mlnx_ofed_9_checksum: 'sha256:cc01caf3bf11bd60ace5ce3402aac12ba876f121702152431d15c2360983f712'

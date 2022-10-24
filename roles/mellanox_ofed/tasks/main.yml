@@ -3,25 +3,41 @@
   command: uname -r
   register: mlnx_ofed_uname_rslt
 
-- name: Install build dependencies
+- name: Install common dependencies
+  dnf:
+    name:
+      - gcc
+      - gcc-gfortran
+      - "kernel-devel-{{ mlnx_ofed_uname_rslt.stdout }}"
+      - kernel-rpm-macros
+      - libtool
+      - lsof
+      - make
+      - patch
+      - python3-dnf-plugin-versionlock
+      - rpm-build
+      - tk
+      - tcsh
+
+- name: Install EL8 build dependencies
   dnf:
     name:
       - '@perl/minimal'
       - '@python36/build'
-      - "kernel-devel-{{ mlnx_ofed_uname_rslt.stdout }}"
       - "kernel-modules-extra-{{ mlnx_ofed_uname_rslt.stdout }}"
-      - python3-dnf-plugin-versionlock
-      - gcc
-      - gcc-gfortran
-      - libtool
-      - lsof
-      - rpm-build
-      - kernel-rpm-macros
       - elfutils-libelf-devel
-      - make
-      - tk
-      - tcsh
     state: present
+  when: ansible_facts['distribution_major_version'] == '8'
+
+- name: Install EL9 build dependencies
+  dnf:
+    name:
+      - perl
+      - python3-devel
+      - libusbx
+      - tcl
+    state: present
+  when: ansible_facts['distribution_major_version'] == '9'
 
 - name: Create Mellanox OFED temporary directory
   tempfile:
@@ -32,8 +48,8 @@
 
 - name: Download drivers tarball
   get_url:
-    url: "{{ mlnx_ofed_url }}"
-    checksum: "{{ mlnx_ofed_checksum }}"
+    url: "{{ mlnx_ofed_url if ansible_facts['distribution_major_version'] == '8' else mlnx_ofed_9_url }}"
+    checksum: "{{ mlnx_ofed_checksum if ansible_facts['distribution_major_version'] == '8' else mlnx_ofed_9_checksum }}"
     dest: "{{ mlnx_ofed_tmp.path }}/MLNX_OFED.tgz"
 
 - name: Unpack drivers tarball
@@ -47,6 +63,13 @@
     paths: "{{ mlnx_ofed_tmp.path }}/"
     file_type: directory
   register: mlnx_ofed_found_dirs
+
+- name: Patch Mellanox OFED installer for AlmaLinux support
+  replace:
+    path: "{{ mlnx_ofed_found_dirs.files[0].path }}/common.pl"
+    regexp: '(.*?)\(\$dist_rpm =~ /redhat-release-9\.0-/\)(.*?)$'
+    replace: '\1($dist_rpm =~ /(redhat|almalinux)-release-9.0-/)\2'
+  when: ansible_facts['distribution_major_version'] == '9'
 
 - name: Run Mellanox OFED installer
   command: "{{ mlnx_ofed_found_dirs.files[0].path }}/mlnxofedinstall --kernel {{ mlnx_ofed_uname_rslt.stdout }} --kernel-sources /usr/src/kernels/{{ mlnx_ofed_uname_rslt.stdout }} --add-kernel-support --skip-repo"
@@ -64,3 +87,8 @@
   command: dnf versionlock add perftest
   register: perftest_lock
   changed_when: "'Adding versionlock on: perftest' in perftest_lock.stdout"
+
+- name: Lock openmpi package version
+  command: dnf versionlock add openmpi
+  register: openmpi_lock
+  changed_when: "'Adding versionlock on: openmpi' in openmpi_lock.stdout"

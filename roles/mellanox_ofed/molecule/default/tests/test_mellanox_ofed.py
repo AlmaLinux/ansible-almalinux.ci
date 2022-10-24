@@ -26,3 +26,10 @@ def test_perftest_versionlock(host):
     with host.sudo():
         cmd = host.run('dnf versionlock list')
         assert 'perftest' in cmd.stdout
+
+def test_openmpi_versionlock(host):
+    if int(host.system_info.release[0]) != 9:
+        pytest.skip('required only on EL9')
+    with host.sudo():
+        cmd = host.run('dnf versionlock list')
+        assert 'openmpi' in cmd.stdout

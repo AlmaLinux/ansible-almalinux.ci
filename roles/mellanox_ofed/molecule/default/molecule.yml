@@ -6,8 +6,12 @@ driver:
 platforms:
   - name: almalinux-8
     box: almalinux/8
-    memory: 1024
-    cpus: 1
+    memory: 2048
+    cpus: 2
+  - name: almalinux-9
+    box: almalinux/9
+    memory: 2048
+    cpus: 2
 provisioner:
   name: ansible
 
