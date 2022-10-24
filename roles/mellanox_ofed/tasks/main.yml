@@ -48,12 +48,6 @@
     file_type: directory
   register: mlnx_ofed_found_dirs
 
-- name: Patch Mellanox OFED installer for AlmaLinux support
-  replace:
-    path: "{{ mlnx_ofed_found_dirs.files[0].path }}/common.pl"
-    regexp: '^(.*?/)\(redhat\|centos\|centos-linux\)-release-8(.*?)$'
-    replace: '\1(redhat|centos|centos-linux|almalinux)-release-8\2'
-
 - name: Run Mellanox OFED installer
   command: "{{ mlnx_ofed_found_dirs.files[0].path }}/mlnxofedinstall --kernel {{ mlnx_ofed_uname_rslt.stdout }} --kernel-sources /usr/src/kernels/{{ mlnx_ofed_uname_rslt.stdout }} --add-kernel-support --skip-repo"
 
