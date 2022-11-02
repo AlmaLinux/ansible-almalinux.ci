@@ -1,0 +1,10 @@
+---
+# Based on ansible-lint config
+extends: default
+
+ignore: |
+  env
+  venv
+
+rules:
+  line-length: disable

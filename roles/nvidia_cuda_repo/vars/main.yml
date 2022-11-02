@@ -1,0 +1,8 @@
+---
+nvidia_cuda_repo_arch_map:
+  aarch64: sbsa
+  ppc64le: ppc64le
+  x86_64: x86_64
+nvidia_cuda_rhel: "rhel{{ ansible_facts['distribution_major_version'] }}"
+nvidia_cuda_repo_prefix: "cuda-{{ nvidia_cuda_rhel }}"
+nvidia_cuda_repo_name: "{{ nvidia_cuda_repo_prefix }}-{{ nvidia_cuda_arch }}"

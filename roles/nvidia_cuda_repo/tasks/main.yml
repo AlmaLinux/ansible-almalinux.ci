@@ -1,0 +1,22 @@
+---
+- name: Detect Nvidia Cuda repository architecture
+  set_fact:
+    nvidia_cuda_arch: "{{ nvidia_cuda_repo_arch_map[ansible_architecture] }}"
+  when: ansible_architecture in nvidia_cuda_repo_arch_map
+
+- name: Check if Nvidia Cuda repository architecture is defined
+  fail: msg="nvidia_cuda_arch is not defined or empty"
+  when: |
+    (nvidia_cuda_arch is undefined)
+    or (nvidia_cuda_arch is none)
+    or (nvidia_cuda_arch | trim | length == 0)
+
+- name: Add Nvidia Cuda repository
+  yum_repository:
+    name: "{{ nvidia_cuda_repo_name }}"
+    description: "{{ nvidia_cuda_repo_name }}"
+    file: "{{ nvidia_cuda_repo_prefix }}"
+    baseurl: "https://developer.download.nvidia.com/compute/cuda/repos/{{ nvidia_cuda_rhel }}/{{ nvidia_cuda_arch }}"
+    enabled: true
+    gpgcheck: true
+    gpgkey: "https://developer.download.nvidia.com/compute/cuda/repos/{{ nvidia_cuda_rhel }}/{{ nvidia_cuda_arch }}/D42D0685.pub"
