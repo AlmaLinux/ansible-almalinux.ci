@@ -1,0 +1,46 @@
+---
+dependency:
+  name: galaxy
+  options:
+    requirements-file: requirements.yml
+driver:
+  name: vagrant
+platforms:
+  - name: almalinux-8
+    box: almalinux/8
+    memory: 1024
+    cpus: 1
+  - name: almalinux-9
+    box: almalinux/9
+    memory: 1024
+    cpus: 1
+
+provisioner:
+  name: ansible
+  inventory:
+    host_vars:
+      almalinux-8:
+        nvidia_cuda_version: '11-6'
+      almalinux-9:
+        nvidia_cuda_version: '11-7'
+
+lint: |
+  set -e
+  yamllint .
+  ansible-lint --exclude molecule
+
+verifier:
+  name: testinfra
+  options:
+    v: true
+
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - syntax
+    - create
+    - converge
+    - verify
+    - destroy

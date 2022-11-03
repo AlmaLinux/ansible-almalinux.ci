@@ -1,0 +1,21 @@
+---
+- name: Check if nvidia_cuda_version is defined
+  ansible.builtin.fail:
+    msg: nvidia_cuda_version is not defined or empty
+  when: |
+    (nvidia_cuda_version is undefined)
+    or (nvidia_cuda_version is none)
+    or (nvidia_cuda_version | trim | length == 0)
+
+- name: Install cuda-toolkit package
+  ansible.builtin.dnf:
+    name: "cuda-toolkit-{{ nvidia_cuda_version }}"
+    state: present
+
+- name: Create cuda-toolkit bash profile
+  ansible.builtin.copy:
+    src: cuda-toolkit.sh
+    dest: /etc/profile.d/cuda-toolkit.sh
+    owner: root
+    group: root
+    mode: 0644
