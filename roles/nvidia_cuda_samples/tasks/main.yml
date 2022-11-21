@@ -1,0 +1,51 @@
+---
+- name: Install Nvidia CUDA samples build dependencies
+  dnf:
+    name: make
+    state: present
+
+- name: Check Nvidia CUDA samples presence
+  stat:
+    path: "{{ nvidia_cuda_samples_dir }}/0_Introduction"
+  register: nvidia_cuda_samples_intro_dir
+
+- name: Download, compile and install Nvidia CUDA samples
+  block:
+    - name: Create Nvidia CUDA samples temporary directory
+      ansible.builtin.tempfile:
+        path: /root
+        state: directory
+        prefix: cuda_samples_
+      register: nvidia_cuda_samples_tmp
+
+    - name: Download Nvidia CUDA samples sources
+      ansible.builtin.get_url:
+        url: "https://github.com/NVIDIA/cuda-samples/archive/refs/tags/v{{ nvidia_cuda_samples_version }}.tar.gz"
+        dest: "{{ nvidia_cuda_samples_tmp.path }}/cuda-samples.tar.gz"
+
+    - name: Unpack Nvidia CUDA samples sources
+      ansible.builtin.unarchive:
+        src: "{{ nvidia_cuda_samples_tmp.path }}/cuda-samples.tar.gz"
+        dest: "{{ nvidia_cuda_samples_tmp.path }}/"
+        remote_src: true
+
+    - name: Build Nvidia CUDA samples
+      ansible.builtin.command: make
+      args:
+        chdir: "{{ nvidia_cuda_samples_tmp.path }}/cuda-samples-{{ nvidia_cuda_samples_version }}"
+      changed_when: false
+
+    - name: Install Nvidia CUDA samples
+      ansible.builtin.copy:
+        src: "{{ nvidia_cuda_samples_tmp.path }}/cuda-samples-{{ nvidia_cuda_samples_version }}/Samples/"
+        dest: "{{ nvidia_cuda_samples_dir }}"
+        owner: root
+        group: root
+        remote_src: true
+  always:
+    - name: Delete Nvidia CUDA samples temporary directory
+      ansible.builtin.file:
+        path: "{{ nvidia_cuda_samples_tmp.path }}"
+        state: absent
+      when: nvidia_cuda_samples_tmp.path is defined
+  when: not nvidia_cuda_samples_intro_dir.stat.exists
